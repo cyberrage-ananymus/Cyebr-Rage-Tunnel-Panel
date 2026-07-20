@@ -1,8 +1,7 @@
-# pages.py - Cyber-Rage Tunnel Panel v1.0
+# pages.py - Cyber-Rage v2.0
 # Login, Dashboard, Public subscription page
 # Font: Space Grotesk + JetBrains Mono
 # Icons: Phosphor Icons
-# Protocol: VLESS + Reality
 
 import json
 from urllib.parse import quote
@@ -12,7 +11,7 @@ def get_public_page_html(uuid_key: str) -> str:
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cyber-Rage Tunnel</title>
+<title>Cyber-Rage</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.0.3/src/regular/style.css">
@@ -81,7 +80,7 @@ LOGIN_HTML = r"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cyber-Rage Tunnel | Login</title>
+<title>Cyber-Rage | Login</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.0.3/src/regular/style.css">
@@ -99,7 +98,7 @@ body{font-family:'Space Grotesk',system-ui,sans-serif;background:var(--bg);min-h
 .wrap{position:relative;z-index:10;width:100%;max-width:420px}
 .card{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:40px 36px 36px;backdrop-filter:blur(30px);box-shadow:0 0 100px rgba(0,240,255,0.05),0 25px 60px rgba(0,0,0,.6)}
 .brand{display:flex;align-items:center;gap:14px;margin-bottom:30px}
-.brand-icon{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#00f0ff,#ff00ff);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff;box-shadow:0 0 30px rgba(0,240,255,0.3),0 0 20px rgba(255,0,255,0.2)}
+.brand-icon{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#00f0ff,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff;box-shadow:0 0 30px rgba(0,240,255,0.3),0 0 20px rgba(139,92,246,0.2)}
 .brand-name{font-size:18px;font-weight:700;color:var(--text);letter-spacing:-.02em}
 .brand-sub{font-size:11px;color:var(--dim);margin-top:2px;letter-spacing:.05em}
 h1{font-size:24px;font-weight:700;color:var(--text);margin-bottom:6px;letter-spacing:-.02em}
@@ -131,8 +130,8 @@ input:focus~.ic{color:var(--accent)}
 <div class="wrap">
   <div class="card">
     <div class="brand">
-      <div class="brand-icon">CRT</div>
-      <div><div class="brand-name">Cyber-Rage Tunnel</div><div class="brand-sub">v1.0 REALITY GATEWAY</div></div>
+      <div class="brand-icon">CR</div>
+      <div><div class="brand-name">Cyber-Rage</div><div class="brand-sub">v2.0 GATEWAY</div></div>
     </div>
     <h1>Access Panel</h1>
     <p class="sub">Enter your password to access the dashboard</p>
@@ -151,7 +150,7 @@ input:focus~.ic{color:var(--accent)}
       </div>
       <button class="btn" type="submit" id="btn"><i class="ph ph-arrow-right"></i> Login to Dashboard</button>
     </form>
-    <div class="footer">Cyber-Rage Tunnel &bull; VLESS + Reality</div>
+    <div class="footer">Cyber-Rage &bull; VLESS Gateway</div>
   </div>
 </div>
 <script>
@@ -177,7 +176,7 @@ DASHBOARD_HTML = r"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cyber-Rage Tunnel</title>
+<title>Cyber-Rage</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.0.3/src/regular/style.css">
@@ -215,7 +214,7 @@ body{font-family:'Space Grotesk',system-ui,sans-serif;background:var(--bg);color
 a{color:inherit;text-decoration:none}
 .sidebar{width:var(--sidebar-w);min-height:100vh;background:var(--bg2);border-left:1px solid var(--card-b);display:flex;flex-direction:column;flex-shrink:0;position:fixed;right:0;top:0;bottom:0;z-index:200;transition:background .3s,border-color .3s,transform .25s}
 .logo{display:flex;align-items:center;gap:12px;padding:22px 18px 18px;border-bottom:1px solid var(--card-b)}
-.logo-icon{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#00f0ff,#ff00ff);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;box-shadow:0 0 20px rgba(0,240,255,0.3);flex-shrink:0}
+.logo-icon{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#00f0ff,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff;box-shadow:0 0 20px rgba(0,240,255,0.3);flex-shrink:0}
 .logo-name{font-size:15px;font-weight:700;color:var(--t1)}
 .logo-sub{font-size:10px;color:var(--t3);margin-top:2px;letter-spacing:.05em}
 .sb-close{display:none;position:absolute;left:12px;top:22px;background:var(--accent-d);border:1px solid var(--card-b);color:var(--t2);width:32px;height:32px;border-radius:8px;font-size:16px;align-items:center;justify-content:center;cursor:pointer}
@@ -233,7 +232,7 @@ a{color:inherit;text-decoration:none}
 .sb-logout:hover{background:rgba(255,0,100,0.15)}
 .mob-top{display:none;position:fixed;top:0;right:0;left:0;height:54px;background:var(--bg2);border-bottom:1px solid var(--card-b);z-index:150;align-items:center;justify-content:space-between;padding:0 16px;transition:background .3s}
 .mob-top .ml{display:flex;align-items:center;gap:10px}
-.mob-logo{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,#00f0ff,#ff00ff);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff}
+.mob-logo{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,#00f0ff,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff}
 .mob-title{color:var(--t1);font-size:14px;font-weight:700}
 .mob-right{display:flex;gap:8px}
 .menu-btn,.theme-mob{background:var(--accent-d);border:1px solid var(--card-b);color:var(--t2);width:36px;height:36px;border-radius:9px;font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.15s}
@@ -247,6 +246,17 @@ a{color:inherit;text-decoration:none}
 .tb-title{font-size:20px;font-weight:700;color:var(--t1);letter-spacing:-.02em;display:flex;align-items:center;gap:8px}
 .tb-title i{color:var(--accent);font-size:22px}
 .tb-sub{font-size:12px;color:var(--t3);margin-top:4px}
+.tb-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.badge{font-size:10px;padding:4px 12px;border-radius:20px;font-weight:700;display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.bg-green{background:var(--green-bg);color:var(--green-t)}
+.bg-blue{background:var(--accent-d);color:var(--accent)}
+.bg-amber{background:var(--amber-bg);color:var(--amber-t)}
+.bg-red{background:var(--red-bg);color:var(--red-t)}
+.bg-purple{background:var(--purple-bg);color:var(--purple)}
+.dot{width:6px;height:6px;border-radius:50%;display:inline-block}
+.dg{background:var(--green)}.dr{background:var(--red)}.da{background:var(--amber)}.db{background:var(--accent)}
+.pulse{animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
 .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
 .metric{background:var(--card);border:1px solid var(--card-b);border-radius:var(--radius);padding:18px;transition:all .2s;position:relative;overflow:hidden;cursor:default}
 .metric::after{content:'';position:absolute;top:0;right:0;width:3px;height:100%;background:var(--accent);opacity:0;transition:.2s}
@@ -285,12 +295,22 @@ a{color:inherit;text-decoration:none}
 .card:hover{border-color:var(--card-bh)}
 .card-title{font-size:13px;font-weight:700;color:var(--t1);margin-bottom:16px;display:flex;align-items:center;gap:8px}
 .card-title i{font-size:17px;color:var(--accent)}
+.ml-auto{margin-right:auto}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
 .g3{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:18px}
+.mb18{margin-bottom:18px}
+.sr{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(0,240,255,0.04);font-size:12.5px}
+.sr:last-child{border-bottom:none}
+.sr-k{color:var(--t2);display:flex;align-items:center;gap:6px}
+.sr-v{color:var(--t1);font-weight:600;font-size:12px}
+.ch{position:relative;height:240px}
 .ch-lg{position:relative;height:340px}
+.ch-sm{position:relative;height:195px}
 .exp-chip{font-size:9.5px;padding:3px 10px;border-radius:6px;font-weight:700;display:inline-flex;align-items:center;gap:3px}
 .ec-ok{background:var(--green-bg);color:var(--green-t)}
 .ec-warn{background:var(--amber-bg);color:var(--amber-t)}
 .ec-exp{background:var(--red-bg);color:var(--red-t)}
+.ec-inf{background:var(--accent-d);color:var(--accent)}
 .form-row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
 .fg{display:flex;flex-direction:column;gap:6px;flex:1;min-width:120px}
 .fg label{font-size:10.5px;color:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
@@ -333,8 +353,6 @@ a{color:inherit;text-decoration:none}
 .log-ok .log-msg{color:var(--green-t)}
 .log-err .log-msg{color:var(--red-t)}
 .log-warn .log-msg{color:var(--amber-t)}
-.reality-info{background:var(--accent-d);border:1px solid rgba(0,240,255,0.1);border-radius:10px;padding:12px;margin-bottom:14px;font-size:11px;color:var(--t2);line-height:1.8}
-.reality-info code{color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:10px;background:rgba(0,240,255,0.08);padding:2px 6px;border-radius:4px}
 @media(max-width:900px){
   .sidebar{transform:translateX(100%)}
   .sidebar.open{transform:translateX(0)}
@@ -345,7 +363,7 @@ a{color:inherit;text-decoration:none}
 }
 @media(max-width:520px){
   .metrics{grid-template-columns:1fr}
-  .g3{grid-template-columns:1fr}
+  .g2,.g3{grid-template-columns:1fr}
   .form-row{flex-direction:column}
   .fg{min-width:0}
 }
@@ -353,7 +371,7 @@ a{color:inherit;text-decoration:none}
 </head>
 <body>
 <div class="mob-top">
-  <div class="ml"><div class="mob-logo">CRT</div><div class="mob-title">Cyber-Rage Tunnel</div></div>
+  <div class="ml"><div class="mob-logo">CR</div><div class="mob-title">Cyber-Rage</div></div>
   <div class="mob-right">
     <button class="theme-mob" onclick="toggleTheme()"><i class="ph ph-moon"></i></button>
     <button class="menu-btn" onclick="toggleSidebar()"><i class="ph ph-list"></i></button>
@@ -363,8 +381,8 @@ a{color:inherit;text-decoration:none}
 
 <aside class="sidebar" id="sidebar">
   <div class="logo">
-    <div class="logo-icon">CRT</div>
-    <div><div class="logo-name">Cyber-Rage Tunnel</div><div class="logo-sub">v1.0 REALITY</div></div>
+    <div class="logo-icon">CR</div>
+    <div><div class="logo-name">Cyber-Rage</div><div class="logo-sub">v2.0 GATEWAY</div></div>
     <button class="sb-close" onclick="toggleSidebar()"><i class="ph ph-x"></i></button>
   </div>
   <div class="nav-wrap">
@@ -386,16 +404,17 @@ a{color:inherit;text-decoration:none}
 </aside>
 
 <main class="main">
+<!-- OVERVIEW -->
 <div class="pg on" id="pg-overview">
-  <div class="topbar"><div><div class="tb-title"><i class="ph ph-squares-four"></i> Dashboard</div><div class="tb-sub">Cyber-Rage Tunnel &bull; VLESS + Reality &bull; <span id="uptime">--:--:--</span></div></div></div>
+  <div class="topbar"><div><div class="tb-title"><i class="ph ph-squares-four"></i> Dashboard</div><div class="tb-sub">Cyber-Rage Gateway &bull; <span id="uptime">--:--:--</span></div></div></div>
   <div class="metrics">
     <div class="metric"><div class="m-icon"><i class="ph ph-gear-six"></i></div><div class="m-label">Active Connections</div><div class="m-val" id="m-conn">0</div></div>
     <div class="metric suc"><div class="m-icon suc"><i class="ph ph-chart-line-up"></i></div><div class="m-label">Total Traffic</div><div class="m-val" id="m-traffic">0 <span class="m-unit">MB</span></div></div>
     <div class="metric"><div class="m-icon pur"><i class="ph ph-link"></i></div><div class="m-label">Configs</div><div class="m-val" id="m-links">0</div><div class="m-sub"><span id="m-active" style="color:var(--green)">0</span> active &bull; <span id="m-expired" style="color:var(--red)">0</span> expired</div></div>
     <div class="metric dan"><div class="m-icon dan"><i class="ph ph-warning"></i></div><div class="m-label">Errors</div><div class="m-val" id="m-errors">0</div><div class="m-sub"><span id="m-reqs">0</span> requests</div></div>
   </div>
-  <div class="vless-box">
-    <div class="vl-header"><div class="vl-title"><i class="ph ph-shield-check"></i> Default Reality Link</div><span class="badge bg-green" style="font-size:10px;padding:4px 12px;border-radius:20px;font-weight:700;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;background:var(--green-bg);color:var(--green-t)"><span class="dot dg pulse" style="width:6px;height:6px;border-radius:50%;display:inline-block;background:var(--green)"></span> Active</span></div>
+  <div class="vless-box" id="default-link-box">
+    <div class="vl-header"><div class="vl-title"><i class="ph ph-link"></i> Default VLESS Link</div><span class="badge bg-green"><span class="dot dg pulse"></span> Active</span></div>
     <div class="vl-code" id="default-link-code">Loading...</div>
     <div class="vl-actions">
       <button class="btn btn-p" onclick="copyDefaultLink()"><i class="ph ph-copy"></i> Copy Link</button>
@@ -408,19 +427,22 @@ a{color:inherit;text-decoration:none}
   </div>
 </div>
 
+<!-- CONNECTIONS -->
 <div class="pg" id="pg-connections">
   <div class="topbar"><div><div class="tb-title"><i class="ph ph-gear-six"></i> Live Connections</div><div class="tb-sub">Real-time active connections grouped by IP</div></div></div>
   <div class="card" id="conn-list"><div class="empty"><i class="ph ph-gear-six"></i>No active connections</div></div>
 </div>
 
+<!-- LINKS -->
 <div class="pg" id="pg-links">
   <div class="topbar">
-    <div><div class="tb-title"><i class="ph ph-link"></i> Config Management</div><div class="tb-sub">Create, edit, and manage VLESS + Reality configs</div></div>
+    <div><div class="tb-title"><i class="ph ph-link"></i> Config Management</div><div class="tb-sub">Create, edit, and manage VLESS configs</div></div>
     <button class="btn btn-p" onclick="showCreateLink()"><i class="ph ph-plus"></i> New Config</button>
   </div>
   <div id="links-list"></div>
 </div>
 
+<!-- SUBS -->
 <div class="pg" id="pg-subs">
   <div class="topbar">
     <div><div class="tb-title"><i class="ph ph-folder"></i> Subscription Groups</div><div class="tb-sub">Group configs and generate public pages</div></div>
@@ -429,49 +451,48 @@ a{color:inherit;text-decoration:none}
   <div id="subs-list"></div>
 </div>
 
+<!-- TRAFFIC -->
 <div class="pg" id="pg-traffic">
   <div class="topbar"><div><div class="tb-title"><i class="ph ph-chart-line-up"></i> Traffic Analysis</div><div class="tb-sub">Hourly traffic breakdown</div></div></div>
   <div class="card"><div class="ch-lg"><canvas id="trafficChartFull"></canvas></div></div>
 </div>
 
+<!-- ACTIVITY -->
 <div class="pg" id="pg-activity">
   <div class="topbar"><div><div class="tb-title"><i class="ph ph-notebook"></i> Activity Log</div><div class="tb-sub">Recent system events and actions</div></div></div>
   <div class="card" id="activity-list"><div class="empty"><i class="ph ph-notebook"></i>No activity yet</div></div>
 </div>
 
+<!-- ERRORS -->
 <div class="pg" id="pg-errors">
   <div class="topbar"><div><div class="tb-title"><i class="ph ph-warning"></i> Error Log</div><div class="tb-sub">Recent errors and warnings</div></div></div>
   <div class="card" id="errors-list"><div class="empty"><i class="ph ph-warning"></i>No errors</div></div>
 </div>
 </main>
 
+<!-- MODALS -->
 <div class="modal-bg" id="modal-create-link">
   <div class="modal">
-    <h2><i class="ph ph-link"></i> New Reality Config</h2>
-    <div class="reality-info">Protocol: <code>VLESS + Reality</code> &bull; Traffic is encrypted and disguised as normal HTTPS</div>
+    <h2><i class="ph ph-link"></i> New Config</h2>
     <div class="form-row">
       <div class="fg"><label>Label</label><input class="fi" id="cl-label" placeholder="My Config"></div>
-      <div class="fg"><label>Protocol</label><select class="fs" id="cl-proto"><option value="vless-reality">VLESS + Reality</option><option value="vless-ws">VLESS + WebSocket</option><option value="xhttp-packet-up">XHTTP (packet-up)</option><option value="xhttp-stream-up">XHTTP (stream-up)</option></select></div>
+      <div class="fg"><label>Protocol</label><select class="fs" id="cl-proto"><option value="vless-ws">VLESS + WebSocket</option><option value="xhttp-packet-up">XHTTP (packet-up)</option><option value="xhttp-stream-up">XHTTP (stream-up)</option></select></div>
     </div>
     <div class="form-row">
       <div class="fg"><label>Fingerprint</label><select class="fs" id="cl-fp"><option value="chrome">Chrome</option><option value="firefox">Firefox</option><option value="safari">Safari</option><option value="ios">iOS</option><option value="android">Android</option><option value="edge">Edge</option><option value="random">Random</option><option value="randomized">Randomized</option></select></div>
       <div class="fg"><label>Port</label><input class="fi" id="cl-port" type="number" value="443" min="1" max="65535"></div>
     </div>
     <div class="form-row">
-      <div class="fg"><label>SNI (Server Name)</label><input class="fi" id="cl-sni" placeholder="www.microsoft.com"></div>
-      <div class="fg"><label>ALPN</label><input class="fi" id="cl-alpn" placeholder="h2,http/1.1"></div>
-    </div>
-    <div class="form-row">
-      <div class="fg"><label>Public Key (pbk)</label><input class="fi" id="cl-pbk" placeholder="Auto-filled from server"></div>
-      <div class="fg"><label>Short ID (sid)</label><input class="fi" id="cl-sid" placeholder="Auto-filled from server"></div>
-    </div>
-    <div class="form-row">
+      <div class="fg"><label>ALPN</label><input class="fi" id="cl-alpn" placeholder="http/1.1"></div>
       <div class="fg"><label>IP Limit (0=unlimited)</label><input class="fi" id="cl-ip" type="number" value="0" min="0"></div>
-      <div class="fg"><label>Speed Limit (Mbps)</label><input class="fi" id="cl-spd" type="number" value="0" min="0"></div>
     </div>
     <div class="form-row">
       <div class="fg"><label>Volume Limit</label><input class="fi" id="cl-vol" placeholder="e.g. 10GB (0=unlimited)"></div>
+      <div class="fg"><label>Speed Limit (Mbps)</label><input class="fi" id="cl-spd" type="number" value="0" min="0"></div>
+    </div>
+    <div class="form-row">
       <div class="fg"><label>Expiry (days, 0=never)</label><input class="fi" id="cl-exp" type="number" value="0" min="0"></div>
+      <div class="fg"><label>Note</label><input class="fi" id="cl-note" placeholder="Optional note"></div>
     </div>
     <div class="form-row" style="margin-top:8px">
       <button class="btn btn-p" onclick="createLink()"><i class="ph ph-check"></i> Create Config</button>
@@ -486,27 +507,23 @@ a{color:inherit;text-decoration:none}
     <input type="hidden" id="el-uid">
     <div class="form-row">
       <div class="fg"><label>Label</label><input class="fi" id="el-label"></div>
-      <div class="fg"><label>Protocol</label><select class="fs" id="el-proto"><option value="vless-reality">VLESS + Reality</option><option value="vless-ws">VLESS + WebSocket</option><option value="xhttp-packet-up">XHTTP (packet-up)</option><option value="xhttp-stream-up">XHTTP (stream-up)</option></select></div>
+      <div class="fg"><label>Protocol</label><select class="fs" id="el-proto"><option value="vless-ws">VLESS + WebSocket</option><option value="xhttp-packet-up">XHTTP (packet-up)</option><option value="xhttp-stream-up">XHTTP (stream-up)</option></select></div>
     </div>
     <div class="form-row">
       <div class="fg"><label>Fingerprint</label><select class="fs" id="el-fp"><option value="chrome">Chrome</option><option value="firefox">Firefox</option><option value="safari">Safari</option><option value="ios">iOS</option><option value="android">Android</option><option value="edge">Edge</option><option value="random">Random</option><option value="randomized">Randomized</option></select></div>
       <div class="fg"><label>Port</label><input class="fi" id="el-port" type="number" min="1" max="65535"></div>
     </div>
     <div class="form-row">
-      <div class="fg"><label>SNI</label><input class="fi" id="el-sni"></div>
       <div class="fg"><label>ALPN</label><input class="fi" id="el-alpn"></div>
-    </div>
-    <div class="form-row">
-      <div class="fg"><label>Public Key (pbk)</label><input class="fi" id="el-pbk"></div>
-      <div class="fg"><label>Short ID (sid)</label><input class="fi" id="el-sid"></div>
-    </div>
-    <div class="form-row">
       <div class="fg"><label>IP Limit</label><input class="fi" id="el-ip" type="number" min="0"></div>
-      <div class="fg"><label>Speed Limit (Mbps)</label><input class="fi" id="el-spd" type="number" min="0"></div>
     </div>
     <div class="form-row">
       <div class="fg"><label>Volume Limit</label><input class="fi" id="el-vol"></div>
+      <div class="fg"><label>Speed Limit (Mbps)</label><input class="fi" id="el-spd" type="number" min="0"></div>
+    </div>
+    <div class="form-row">
       <div class="fg"><label>Expiry (days)</label><input class="fi" id="el-exp" type="number" min="0"></div>
+      <div class="fg"><label>Note</label><input class="fi" id="el-note"></div>
     </div>
     <div class="form-row" style="margin-top:8px">
       <button class="btn btn-p" onclick="updateLink()"><i class="ph ph-check"></i> Save Changes</button>
@@ -537,7 +554,7 @@ a{color:inherit;text-decoration:none}
 <script>
 const $=s=>document.querySelector(s);
 const $$=s=>document.querySelectorAll(s);
-let linksData=[],subsData=[],trafficChart=null,trafficChartFull=null,defaultLink=null,realityConfig=null;
+let linksData=[],subsData=[],trafficChart=null,trafficChartFull=null,defaultLink=null;
 let isDark=true;
 
 function toggleSidebar(){$('#sidebar').classList.toggle('open');$('#overlay').classList.toggle('show')}
@@ -570,7 +587,6 @@ async function loadStats(){
     $('#uptime').textContent=d.uptime;
     $('#conn-badge').textContent=d.active_connections;
     $('#links-badge').textContent=d.links_count;
-    realityConfig=d.reality_config;
     updateTrafficChart(d.hourly);
   }catch(e){}
 }
@@ -632,11 +648,10 @@ function renderLinks(){
     const total=l.limit_bytes||0;
     const pct=total>0?Math.min(100,(used/total)*100):0;
     const bar=total>0?`<div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div><div class="progress-text">${l.used_fmt||'0 B'} / ${limit} (${pct.toFixed(1)}%)</div>`:`<div class="progress-text">${l.used_fmt||'0 B'} / Unlimited</div>`;
-    const protoBadge=l.protocol==='vless-reality'?'<span style="font-size:9px;padding:2px 6px;border-radius:4px;background:var(--accent-d);color:var(--accent);font-weight:700;margin-left:6px">REALITY</span>':'';
     return `<div class="list-item">
       <div class="list-icon">${status}</div>
       <div class="list-info">
-        <div class="list-name">${l.label} ${badge} ${protoBadge}</div>
+        <div class="list-name">${l.label} ${badge}</div>
         <div class="list-sub">${l.protocol} &bull; ${l.fingerprint} &bull; Port ${l.port} &bull; ${l.connected_ips||0} IPs</div>
         ${bar}
       </div>
@@ -691,14 +706,7 @@ function copyText(t){navigator.clipboard.writeText(t).then(()=>showToast('Copied
 function copyDefaultLink(){if(defaultLink)copyText(defaultLink.vless_link)}
 function copySubUrl(){if(defaultLink)copyText(defaultLink.sub_url)}
 
-function showCreateLink(){
-  if(realityConfig){
-    if(!$('#cl-pbk').value&&realityConfig.public_key)$('#cl-pbk').value=realityConfig.public_key;
-    if(!$('#cl-sid').value&&realityConfig.short_ids&&realityConfig.short_ids[0])$('#cl-sid').value=realityConfig.short_ids[0];
-    if(!$('#cl-sni').value&&realityConfig.server_names&&realityConfig.server_names[0])$('#cl-sni').value=realityConfig.server_names[0];
-  }
-  $('#modal-create-link').classList.add('show');
-}
+function showCreateLink(){$('#modal-create-link').classList.add('show')}
 function showCreateSub(){$('#modal-create-sub').classList.add('show')}
 
 async function createLink(){
@@ -708,9 +716,9 @@ async function createLink(){
   await api('/api/links',{method:'POST',body:JSON.stringify({
     label:$('#cl-label').value||'New Config',protocol:$('#cl-proto').value,fingerprint:$('#cl-fp').value,
     port:parseInt($('#cl-port').value)||443,alpn:$('#cl-alpn').value,
-    sni:$('#cl-sni').value,pbk:$('#cl-pbk').value,sid:$('#cl-sid').value,
     limit_value:lv,limit_unit:lu,speed_limit_value:parseFloat($('#cl-spd').value)||0,
-    ip_limit:parseInt($('#cl-ip').value)||0,expires_days:parseInt($('#cl-exp').value)||0
+    ip_limit:parseInt($('#cl-ip').value)||0,expires_days:parseInt($('#cl-exp').value)||0,
+    note:$('#cl-note').value
   })});
   closeModal('modal-create-link');showToast('Config created!');loadLinks();loadStats();
 }
@@ -719,7 +727,7 @@ function editLink(uid){
   const l=linksData.find(x=>x.uuid===uid);if(!l)return;
   $('#el-uid').value=uid;$('#el-label').value=l.label;$('#el-proto').value=l.protocol;
   $('#el-fp').value=l.fingerprint;$('#el-port').value=l.port;$('#el-alpn').value=l.alpn||'';
-  $('#el-ip').value=l.ip_limit||0;$('#el-sni').value=l.sni||'';$('#el-pbk').value=l.pbk||'';$('#el-sid').value=l.sid||'';
+  $('#el-ip').value=l.ip_limit||0;$('#el-note').value=l.note||'';
   $('#el-spd').value=l.speed_limit_bytes?Math.round(l.speed_limit_bytes*8/1024/1024):0;
   $('#el-vol').value=l.limit_bytes?fmtBytesShort(l.limit_bytes):'';
   $('#el-exp').value=l.expires_at?Math.max(0,Math.ceil((new Date(l.expires_at)-new Date())/(86400000))):0;
@@ -735,9 +743,9 @@ async function updateLink(){
   await api('/api/links/'+uid,{method:'PATCH',body:JSON.stringify({
     label:$('#el-label').value,protocol:$('#el-proto').value,fingerprint:$('#el-fp').value,
     port:parseInt($('#el-port').value)||443,alpn:$('#el-alpn').value,
-    sni:$('#el-sni').value,pbk:$('#el-pbk').value,sid:$('#el-sid').value,
     limit_value:lv,limit_unit:lu,speed_limit_value:parseFloat($('#el-spd').value)||0,
-    ip_limit:parseInt($('#el-ip').value)||0,expires_days:parseInt($('#el-exp').value)||0
+    ip_limit:parseInt($('#el-ip').value)||0,expires_days:parseInt($('#el-exp').value)||0,
+    note:$('#el-note').value
   })});
   closeModal('modal-edit-link');showToast('Config updated!');loadLinks();
 }
@@ -771,6 +779,7 @@ async function logout(){
   location.href='/login';
 }
 
+// Auto-refresh
 loadStats();loadLinks();loadSubs();loadActivity();loadConnections();
 setInterval(()=>{loadStats();loadConnections();loadActivity();},5000);
 setInterval(()=>{loadLinks();loadSubs();},15000);

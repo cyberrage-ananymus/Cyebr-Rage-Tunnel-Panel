@@ -21,8 +21,8 @@ from main import (
 )
 from speed_limit import throttle
 
-RELAY_BUF = 4 * 1024 * 1024
-BATCH_THRESHOLD = 100
+RELAY_BUF = 8 * 1024 * 1024
+BATCH_THRESHOLD = 200
 
 
 def _ws_client_ip(ws: WebSocket) -> str:
@@ -41,8 +41,8 @@ def _tune_socket(writer: asyncio.StreamWriter):
         return
     try:
         sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
-        sock.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, 16 * 1024 * 1024)
-        sock.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 16 * 1024 * 1024)
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, 32 * 1024 * 1024)
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 32 * 1024 * 1024)
     except OSError:
         pass
     try:
@@ -173,7 +173,6 @@ async def websocket_tunnel(ws: WebSocket, uuid: str):
     ip = _ws_client_ip(ws)
 
     if not is_ip_allowed(link, uuid, ip):
-        log_activity("connection", f"Rejected {ip} (IP limit)", "warn")
         await ws.close(code=1008, reason="ip limit reached")
         return
 

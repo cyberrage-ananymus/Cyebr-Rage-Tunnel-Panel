@@ -24,28 +24,28 @@ from speed_limit import throttle
 
 router = APIRouter()
 
-XHTTP_BUF = 4 * 1024 * 1024
-DOWNLINK_QUEUE_MAX = 2048
+XHTTP_BUF = 8 * 1024 * 1024
+DOWNLINK_QUEUE_MAX = 4096
 SESSION_IDLE_TIMEOUT = 30
 REAPER_INTERVAL = 10
 TCP_CONNECT_TIMEOUT = 10.0
 
-SOCK_BUF_SIZE = 16 * 1024 * 1024
+SOCK_BUF_SIZE = 32 * 1024 * 1024
 
-FLOW_MIN_HW = 1 * 1024 * 1024
-FLOW_MAX_HW = 128 * 1024 * 1024
-FLOW_START_HW = 8 * 1024 * 1024
-FLOW_FAST_DRAIN_MS = 1.0
-FLOW_SLOW_DRAIN_MS = 15.0
+FLOW_MIN_HW = 2 * 1024 * 1024
+FLOW_MAX_HW = 256 * 1024 * 1024
+FLOW_START_HW = 16 * 1024 * 1024
+FLOW_FAST_DRAIN_MS = 0.8
+FLOW_SLOW_DRAIN_MS = 12.0
 
-QUOTA_MIN_BATCH = 128 * 1024
-QUOTA_MAX_BATCH = 8 * 1024 * 1024
-QUOTA_START_BATCH = 256 * 1024
-QUOTA_CHECK_INTERVAL = 0.1
+QUOTA_MIN_BATCH = 256 * 1024
+QUOTA_MAX_BATCH = 16 * 1024 * 1024
+QUOTA_START_BATCH = 512 * 1024
+QUOTA_CHECK_INTERVAL = 0.08
 
-PACKET_UP_HIGH_WATER = 16 * 1024 * 1024
+PACKET_UP_HIGH_WATER = 32 * 1024 * 1024
 
-BATCH_CHECK_COUNT = 100
+BATCH_CHECK_COUNT = 200
 
 xhttp_sessions: dict = {}
 XHTTP_LOCK = asyncio.Lock()
@@ -141,7 +141,7 @@ class _AdaptiveFlow:
         elapsed_ms = (time.monotonic() - t0) * 1000
         self.last_drain_ms = elapsed_ms
         if elapsed_ms < FLOW_FAST_DRAIN_MS:
-            self.high_water = min(FLOW_MAX_HW, int(self.high_water * 2.0) + 262144)
+            self.high_water = min(FLOW_MAX_HW, int(self.high_water * 2.5) + 524288)
         elif elapsed_ms > FLOW_SLOW_DRAIN_MS:
             self.high_water = max(FLOW_MIN_HW, self.high_water // 2)
 
