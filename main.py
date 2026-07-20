@@ -195,7 +195,9 @@ async def startup():
     await load_state()
     if not REALITY_CONFIG.get("private_key"):
         generate_reality_keys()
-    log_activity("system", "Cyber-Rage Tunnel started", "ok")
+    await save_xray_config()
+    await restart_xray()
+    log_activity("system", "Cyber-Rage Tunnel started with Xray-core", "ok")
     logger.info(f"Cyber-Rage Tunnel started on port {CONFIG['port']}")
 
 @app.on_event("shutdown")
@@ -230,6 +232,90 @@ def generate_reality_keys():
         REALITY_CONFIG["private_key"] = secrets.token_urlsafe(32)
         REALITY_CONFIG["public_key"] = secrets.token_urlsafe(32)
         REALITY_CONFIG["short_ids"] = [secrets.token_hex(4) for _ in range(5)]
+
+XRAY_PROCESS = None
+
+def generate_xray_config():
+    clients = []
+    async with LINKS_LOCK:
+        for uid, link in LINKS.items():
+            if link.get("protocol") == "vless-reality" and link.get("active"):
+                clients.append({
+                    "id": uid,
+                    "flow": "xtls-rprx-vision"
+                })
+
+    xray_config = {
+        "log": {"loglevel": "warning"},
+        "inbounds": [
+            {
+                "listen": "0.0.0.0",
+                "port": 443,
+                "protocol": "vless",
+                "settings": {
+                    "clients": clients,
+                    "decryption": "none"
+                },
+                "streamSettings": {
+                    "network": "tcp",
+                    "security": "reality",
+                    "realitySettings": {
+                        "show": False,
+                        "dest": REALITY_CONFIG.get("dest", "www.microsoft.com:443"),
+                        "xver": 0,
+                        "serverNames": REALITY_CONFIG.get("server_names", ["www.microsoft.com"]),
+                        "privateKey": REALITY_CONFIG.get("private_key", ""),
+                        "shortIds": REALITY_CONFIG.get("short_ids", [""])
+                    }
+                },
+                "sniffing": {
+                    "enabled": True,
+                    "destOverride": ["http", "tls", "quic"]
+                }
+            }
+        ],
+        "outbounds": [
+            {"protocol": "freedom", "tag": "direct"},
+            {"protocol": "blackhole", "tag": "block"}
+        ],
+        "routing": {
+            "domainStrategy": "AsIs",
+            "rules": [
+                {
+                    "type": "field",
+                    "outboundTag": "block",
+                    "ip": ["geoip:private"]
+                }
+            ]
+        }
+    }
+    return xray_config
+
+async def save_xray_config():
+    config = generate_xray_config()
+    config_path = Path("/app/xray_config.json")
+    try:
+        async with aiofiles.open(config_path, "w", encoding="utf-8") as f:
+            await f.write(json.dumps(config, indent=2))
+        logger.info(f"Xray config saved with {len(config['inbounds'][0]['settings']['clients'])} clients")
+    except Exception as e:
+        logger.error(f"Failed to save Xray config: {e}")
+
+async def restart_xray():
+    global XRAY_PROCESS
+    try:
+        import subprocess
+        if XRAY_PROCESS:
+            XRAY_PROCESS.terminate()
+            XRAY_PROCESS.wait(timeout=5)
+        XRAY_PROCESS = subprocess.Popen(
+            ["xray", "run", "-config", "/app/xray_config.json"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
+        )
+        logger.info("Xray-core restarted")
+    except Exception as e:
+        logger.error(f"Failed to restart Xray: {e}")
 
 def get_host(request: Request | None = None) -> str:
     if request is not None:
@@ -784,8 +870,14 @@ async def make_link(
                 if uid not in ids:
                     ids.append(uid)
     asyncio.create_task(save_state())
+    if protocol == "vless-reality":
+        asyncio.create_task(_update_xray_config())
     log_activity("link", f"Config '{LINKS[uid]['label']}' created", "ok")
     return uid, LINKS[uid]
+
+async def _update_xray_config():
+    await save_xray_config()
+    await restart_xray()
 
 async def remove_link(uid: str) -> str | None:
     async with LINKS_LOCK:
@@ -801,6 +893,7 @@ async def remove_link(uid: str) -> str | None:
                 if uid in ids:
                     ids.remove(uid)
     asyncio.create_task(save_state())
+    asyncio.create_task(_update_xray_config())
     log_activity("link", f"Config '{label}' deleted", "err")
     return label
 
@@ -812,6 +905,7 @@ async def set_link_active(uid: str, active: bool) -> dict | None:
         label = LINKS[uid]["label"]
     log_activity("link", f"Config '{label}' {'enabled' if active else 'disabled'}", "ok" if active else "warn")
     asyncio.create_task(save_state())
+    asyncio.create_task(_update_xray_config())
     return LINKS[uid]
 
 async def create_sub_group(name: str = "New Group", desc: str = "", password: str = "") -> tuple[str, dict]:
