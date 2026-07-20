@@ -84,6 +84,19 @@ async def check_and_use(uid: str, n: int) -> bool:
     return True
 
 
+async def _flush_pending_bytes(uid: str, pending_bytes: int, pending_reqs: int, _conn):
+    if pending_bytes <= 0:
+        return
+    try:
+        hourly_traffic[now_ir().strftime("%H:00")] += pending_bytes
+        await check_and_use(uid, pending_bytes)
+        stats["total_requests"] += pending_reqs
+        if _conn:
+            _conn["bytes"] += pending_bytes
+    except Exception:
+        pass
+
+
 async def relay_ws_to_tcp(ws: WebSocket, writer: asyncio.StreamWriter, conn_id: str, uid: str):
     pending_bytes = 0
     pending_reqs = 0
@@ -121,7 +134,8 @@ async def relay_ws_to_tcp(ws: WebSocket, writer: asyncio.StreamWriter, conn_id: 
                 if _conn:
                     _conn["bytes"] += pending_bytes
     except (WebSocketDisconnect, Exception):
-        pass
+        if pending_bytes > 0:
+            asyncio.ensure_future(_flush_pending_bytes(uid, pending_bytes, pending_reqs, _conn))
     finally:
         try:
             writer.write_eof()
@@ -162,7 +176,8 @@ async def relay_tcp_to_ws(ws: WebSocket, reader: asyncio.StreamReader, conn_id: 
                 if _conn:
                     _conn["bytes"] += pending_bytes
     except Exception:
-        pass
+        if pending_bytes > 0:
+            asyncio.ensure_future(_flush_pending_bytes(uid, pending_bytes, pending_reqs, _conn))
 
 
 async def websocket_tunnel(ws: WebSocket, uuid: str):
