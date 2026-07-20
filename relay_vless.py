@@ -12,17 +12,16 @@ from main import (
     hourly_traffic,
     connections,
     error_logs,
-    logger,
     is_link_allowed,
     is_ip_allowed,
     save_state,
-    log_activity,
     now_ir,
 )
 from speed_limit import throttle
 
-RELAY_BUF = 8 * 1024 * 1024
-BATCH_THRESHOLD = 200
+RELAY_BUF = 16 * 1024 * 1024
+BATCH_THRESHOLD = 500
+_write_buffer_limit = RELAY_BUF * 2
 
 
 def _ws_client_ip(ws: WebSocket) -> str:
@@ -41,8 +40,8 @@ def _tune_socket(writer: asyncio.StreamWriter):
         return
     try:
         sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
-        sock.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, 32 * 1024 * 1024)
-        sock.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 32 * 1024 * 1024)
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, 64 * 1024 * 1024)
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 64 * 1024 * 1024)
     except OSError:
         pass
     try:
@@ -88,6 +87,7 @@ async def check_and_use(uid: str, n: int) -> bool:
 async def relay_ws_to_tcp(ws: WebSocket, writer: asyncio.StreamWriter, conn_id: str, uid: str):
     pending_bytes = 0
     pending_reqs = 0
+    _conn = connections.get(conn_id)
     try:
         while True:
             msg = await ws.receive()
@@ -106,18 +106,20 @@ async def relay_ws_to_tcp(ws: WebSocket, writer: asyncio.StreamWriter, conn_id: 
                     break
                 await throttle(uid, pending_bytes)
                 stats["total_requests"] += pending_reqs
-                connections[conn_id]["bytes"] += pending_bytes
+                if _conn:
+                    _conn["bytes"] += pending_bytes
                 pending_bytes = 0
                 pending_reqs = 0
             writer.write(data)
-            if writer.transport.get_write_buffer_size() > RELAY_BUF:
+            if writer.transport.get_write_buffer_size() > _write_buffer_limit:
                 await writer.drain()
         if pending_bytes > 0:
             hourly_traffic[now_ir().strftime("%H:00")] += pending_bytes
             if await check_and_use(uid, pending_bytes):
                 await throttle(uid, pending_bytes)
                 stats["total_requests"] += pending_reqs
-                connections[conn_id]["bytes"] += pending_bytes
+                if _conn:
+                    _conn["bytes"] += pending_bytes
     except (WebSocketDisconnect, Exception):
         pass
     finally:
@@ -131,6 +133,7 @@ async def relay_tcp_to_ws(ws: WebSocket, reader: asyncio.StreamReader, conn_id: 
     first = True
     pending_bytes = 0
     pending_reqs = 0
+    _conn = connections.get(conn_id)
     try:
         while True:
             data = await reader.read(RELAY_BUF)
@@ -145,7 +148,8 @@ async def relay_tcp_to_ws(ws: WebSocket, reader: asyncio.StreamReader, conn_id: 
                     await ws.close(code=1008, reason="quota/disabled/unknown")
                     break
                 await throttle(uid, pending_bytes)
-                connections[conn_id]["bytes"] += pending_bytes
+                if _conn:
+                    _conn["bytes"] += pending_bytes
                 pending_bytes = 0
                 pending_reqs = 0
             payload = (b"\x00\x00" + data) if first else data
@@ -155,7 +159,8 @@ async def relay_tcp_to_ws(ws: WebSocket, reader: asyncio.StreamReader, conn_id: 
             hourly_traffic[now_ir().strftime("%H:00")] += pending_bytes
             if await check_and_use(uid, pending_bytes):
                 await throttle(uid, pending_bytes)
-                connections[conn_id]["bytes"] += pending_bytes
+                if _conn:
+                    _conn["bytes"] += pending_bytes
     except Exception:
         pass
 

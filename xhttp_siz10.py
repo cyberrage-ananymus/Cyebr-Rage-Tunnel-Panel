@@ -14,7 +14,6 @@ from main import (
     hourly_traffic,
     connections,
     error_logs,
-    logger,
     is_link_allowed,
     is_ip_allowed,
     save_state,
@@ -24,28 +23,28 @@ from speed_limit import throttle
 
 router = APIRouter()
 
-XHTTP_BUF = 8 * 1024 * 1024
-DOWNLINK_QUEUE_MAX = 4096
+XHTTP_BUF = 16 * 1024 * 1024
+DOWNLINK_QUEUE_MAX = 8192
 SESSION_IDLE_TIMEOUT = 30
 REAPER_INTERVAL = 10
 TCP_CONNECT_TIMEOUT = 10.0
 
-SOCK_BUF_SIZE = 32 * 1024 * 1024
+SOCK_BUF_SIZE = 64 * 1024 * 1024
 
-FLOW_MIN_HW = 2 * 1024 * 1024
-FLOW_MAX_HW = 256 * 1024 * 1024
-FLOW_START_HW = 16 * 1024 * 1024
-FLOW_FAST_DRAIN_MS = 0.8
-FLOW_SLOW_DRAIN_MS = 12.0
+FLOW_MIN_HW = 4 * 1024 * 1024
+FLOW_MAX_HW = 512 * 1024 * 1024
+FLOW_START_HW = 32 * 1024 * 1024
+FLOW_FAST_DRAIN_MS = 0.5
+FLOW_SLOW_DRAIN_MS = 10.0
 
-QUOTA_MIN_BATCH = 256 * 1024
-QUOTA_MAX_BATCH = 16 * 1024 * 1024
-QUOTA_START_BATCH = 512 * 1024
-QUOTA_CHECK_INTERVAL = 0.08
+QUOTA_MIN_BATCH = 512 * 1024
+QUOTA_MAX_BATCH = 32 * 1024 * 1024
+QUOTA_START_BATCH = 1024 * 1024
+QUOTA_CHECK_INTERVAL = 0.05
 
-PACKET_UP_HIGH_WATER = 32 * 1024 * 1024
+PACKET_UP_HIGH_WATER = 64 * 1024 * 1024
 
-BATCH_CHECK_COUNT = 200
+BATCH_CHECK_COUNT = 500
 
 xhttp_sessions: dict = {}
 XHTTP_LOCK = asyncio.Lock()
@@ -141,7 +140,7 @@ class _AdaptiveFlow:
         elapsed_ms = (time.monotonic() - t0) * 1000
         self.last_drain_ms = elapsed_ms
         if elapsed_ms < FLOW_FAST_DRAIN_MS:
-            self.high_water = min(FLOW_MAX_HW, int(self.high_water * 2.5) + 524288)
+            self.high_water = min(FLOW_MAX_HW, int(self.high_water * 3.0) + 1048576)
         elif elapsed_ms > FLOW_SLOW_DRAIN_MS:
             self.high_water = max(FLOW_MIN_HW, self.high_water // 2)
 
@@ -263,6 +262,7 @@ def ensure_reaper():
 async def _pump_tcp_to_queue(session_id: str, uuid: str, reader: asyncio.StreamReader, down_q: asyncio.Queue):
     first = True
     gate = _QuotaGate(uuid)
+    _conn = None
     try:
         while True:
             data = await reader.read(XHTTP_BUF)
@@ -274,9 +274,9 @@ async def _pump_tcp_to_queue(session_id: str, uuid: str, reader: asyncio.StreamR
             async with XHTTP_LOCK:
                 sess = xhttp_sessions.get(session_id)
             if sess:
-                c = connections.get(sess["conn_id"])
-                if c:
-                    c["bytes"] += len(data)
+                _conn = connections.get(sess["conn_id"])
+                if _conn:
+                    _conn["bytes"] += len(data)
                 hourly_traffic[datetime.now().strftime("%H:00")] += len(data)
             payload = (b"\x00\x00" + data) if first else data
             first = False
