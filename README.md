@@ -1,15 +1,14 @@
-# Cyber-Rage Tunnel Panel
+# Cyber-Rage Fast Panel
 
-VLESS + Reality tunnel gateway with high-speed relay and cyberpunk dashboard.
+High-speed VLESS Gateway with WebSocket and XHTTP transport. Maximum performance optimized.
 
 ## Features
 
-- **VLESS + Reality** — Traffic disguised as normal HTTPS, bypasses DPI
+- **VLESS over WebSocket** — Classic WS transport
 - **XHTTP Transport** — packet-up and stream-up modes
-- **WebSocket Transport** — Classic VLESS over WS
+- **Maximum Speed** — 8MB buffers, 32MB sockets, uvloop, batch processing
 - **Admin Dashboard** — Cyberpunk-themed UI with Space Grotesk font
 - **Config Management** — Create unlimited configs with traffic/speed/IP limits
-- **Reality Auto-Generate** — Keys and Short IDs generated automatically
 - **Subscription Groups** — Group configs and generate public pages
 - **Traffic Monitoring** — Hourly charts and live connection tracking
 - **Bandwidth Throttling** — Per-config speed limits (Mbps)
@@ -17,19 +16,32 @@ VLESS + Reality tunnel gateway with high-speed relay and cyberpunk dashboard.
 - **Auto Expiry** — Config expiration by days
 - **Persistent Storage** — State saved to disk
 
+## Speed Optimizations
+
+| Parameter | Value |
+|---|---|
+| Relay Buffer | 8 MB |
+| Socket Buffer | 32 MB |
+| XHTTP Buffer | 8 MB |
+| Quota Batch | 16 MB |
+| Flow High Water | 256 MB |
+| Downlink Queue | 4096 |
+| Batch Threshold | 200 chunks |
+| Event Loop | uvloop |
+
 ## Deploy on Railway
 
 1. **Fork** this repository
 2. Go to [Railway.app](https://railway.app/) → **New Project** → **Deploy from GitHub repo**
 3. Select your forked repo
 4. Go to **Settings** → **Networking** → **Generate Domain**
-5. Add a **Volume** mounted at `/data` (required for persistence)
+5. Add a **Volume** mounted at `/data` for persistent storage
 
 ## Deploy on VPS
 
 ```bash
 git clone <your-repo>
-cd Cyber-Rage-Tunnel-Panel
+cd Cyber-Rage-Fast-Panel
 pip install -r requirements.txt
 python main.py
 ```
@@ -48,17 +60,6 @@ python main.py
 ## Default Credentials
 
 - **Password:** `CYBERRAGE`
-
-## Reality Protocol
-
-When you create a config with VLESS + Reality:
-
-- **SNI (Server Name):** The website your traffic appears to visit (e.g., `www.microsoft.com`)
-- **Public Key (pbk):** Your server's Reality public key (auto-filled)
-- **Short ID (sid):** Authentication token (auto-filled)
-- **Fingerprint:** Browser TLS fingerprint to mimic
-
-Reality keys are generated automatically on first startup and saved to disk.
 
 ## API Endpoints
 
@@ -84,7 +85,7 @@ Reality keys are generated automatically on first startup and saved to disk.
 
 ## Tech Stack
 
-- **Backend:** Python 3.11+ / FastAPI / Uvicorn
-- **Protocol:** VLESS + Reality / XHTTP / WebSocket
+- **Backend:** Python 3.11+ / FastAPI / Uvicorn / uvloop
 - **Frontend:** Space Grotesk / JetBrains Mono / Phosphor Icons / Chart.js
+- **Transport:** VLESS over WebSocket & XHTTP
 - **Storage:** JSON file on disk
