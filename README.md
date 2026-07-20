@@ -6,7 +6,7 @@ High-speed VLESS Gateway with WebSocket and XHTTP transport. Maximum performance
 
 - **VLESS over WebSocket** — Classic WS transport
 - **XHTTP Transport** — packet-up and stream-up modes
-- **Maximum Speed** — 8MB buffers, 32MB sockets, uvloop, batch processing
+- **Maximum Speed** — 16MB buffers, 64MB sockets, uvloop, batch processing
 - **Admin Dashboard** — Cyberpunk-themed UI with Space Grotesk font
 - **Config Management** — Create unlimited configs with traffic/speed/IP limits
 - **Subscription Groups** — Group configs and generate public pages
@@ -20,13 +20,13 @@ High-speed VLESS Gateway with WebSocket and XHTTP transport. Maximum performance
 
 | Parameter | Value |
 |---|---|
-| Relay Buffer | 8 MB |
-| Socket Buffer | 32 MB |
-| XHTTP Buffer | 8 MB |
-| Quota Batch | 16 MB |
-| Flow High Water | 256 MB |
-| Downlink Queue | 4096 |
-| Batch Threshold | 200 chunks |
+| Relay Buffer | 16 MB |
+| Socket Buffer | 64 MB |
+| XHTTP Buffer | 16 MB |
+| Quota Batch | 32 MB |
+| Flow High Water | 512 MB |
+| Downlink Queue | 8192 |
+| Batch Threshold | 500 chunks |
 | Event Loop | uvloop |
 
 ## Deploy on Railway
