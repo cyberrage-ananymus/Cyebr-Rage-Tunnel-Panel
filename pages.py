@@ -648,12 +648,21 @@ function renderLinks(){
     const total=l.limit_bytes||0;
     const pct=total>0?Math.min(100,(used/total)*100):0;
     const bar=total>0?`<div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div><div class="progress-text">${l.used_fmt||'0 B'} / ${limit} (${pct.toFixed(1)}%)</div>`:`<div class="progress-text">${l.used_fmt||'0 B'} / Unlimited</div>`;
+    const ex=l.expiry;
+    let expBlock='';
+    if(ex){
+      const passed=Math.min(ex.total_days,Math.floor(ex.elapsed_days));
+      const remTxt=ex.remaining_days>0?`${Math.ceil(ex.remaining_days)}d left`:`expired ${Math.ceil(Math.abs(ex.remaining_days))}d ago`;
+      const fillCss=l.expired?'background:var(--red)':ex.percent>=90?'background:var(--amber)':'';
+      expBlock=`<div class="progress-bar"><div class="progress-fill" style="width:${ex.percent}%;${fillCss}"></div></div><div class="progress-text"><i class="ph ph-calendar-check"></i> ${passed}/${ex.total_days} days (${ex.percent.toFixed(1)}%) &bull; ${remTxt}</div>`;
+    }
     return `<div class="list-item">
       <div class="list-icon">${status}</div>
       <div class="list-info">
         <div class="list-name">${l.label} ${badge}</div>
         <div class="list-sub">${l.protocol} &bull; ${l.fingerprint} &bull; Port ${l.port} &bull; ${l.connected_ips||0} IPs</div>
         ${bar}
+        ${expBlock}
       </div>
       <div class="list-actions">
         <button class="btn btn-sm btn-g" onclick="copyText('${l.vless_link.replace(/'/g,"\\'")}')" title="Copy Link"><i class="ph ph-copy"></i></button>

@@ -296,6 +296,43 @@ def is_link_expired(link: dict) -> bool:
     except Exception:
         return False
 
+def expiry_progress(link: dict) -> dict | None:
+    """How much of a config's expiry window has elapsed.
+    Returns None if the config never expires. total_days comes from
+    'expires_days' (set on create/update); for older configs saved before
+    that field existed, it's derived from created_at -> expires_at instead.
+    """
+    exp = link.get("expires_at")
+    if not exp:
+        return None
+    try:
+        expires_dt = datetime.fromisoformat(exp)
+    except Exception:
+        return None
+
+    total_days = int(link.get("expires_days") or 0)
+    if total_days <= 0:
+        created = link.get("created_at")
+        if created:
+            try:
+                created_dt = datetime.fromisoformat(created)
+                total_days = max(1, round((expires_dt - created_dt).total_seconds() / 86400))
+            except Exception:
+                total_days = 0
+    if total_days <= 0:
+        return None
+
+    remaining_days = (expires_dt - datetime.now()).total_seconds() / 86400
+    elapsed_days = max(0.0, min(float(total_days), total_days - remaining_days))
+    percent = max(0.0, min(100.0, (elapsed_days / total_days) * 100))
+
+    return {
+        "total_days": total_days,
+        "elapsed_days": round(elapsed_days, 2),
+        "remaining_days": round(remaining_days, 2),
+        "percent": round(percent, 1),
+    }
+
 def is_link_allowed(link: dict | None) -> bool:
     if link is None:
         return False
@@ -355,6 +392,7 @@ async def ensure_default_link():
                     "created_at": datetime.now().isoformat(),
                     "active": True,
                     "expires_at": None,
+                    "expires_days": 0,
                     "note": "",
                     "is_default": True,
                     "sub_id": None,
@@ -665,6 +703,7 @@ async def make_link(
     label: str = "New Link",
     limit_bytes: int = 0,
     expires_at: str | None = None,
+    expires_days: int = 0,
     note: str = "",
     sub_id: str | None = None,
     protocol: str = DEFAULT_PROTOCOL,
@@ -690,6 +729,7 @@ async def make_link(
             "created_at": datetime.now().isoformat(),
             "active": True,
             "expires_at": expires_at,
+            "expires_days": max(0, expires_days),
             "note": (note or "").strip()[:200],
             "is_default": False,
             "sub_id": sub_id,
@@ -821,6 +861,7 @@ async def create_link(request: Request, _=Depends(require_auth)):
         label=body.get("label") or "New Link",
         limit_bytes=limit_bytes,
         expires_at=expires_at,
+        expires_days=exp_days,
         note=body.get("note") or "",
         sub_id=body.get("sub_id") or None,
         protocol=body.get("protocol") or DEFAULT_PROTOCOL,
@@ -836,6 +877,7 @@ async def create_link(request: Request, _=Depends(require_auth)):
         "uuid": uid,
         **link,
         "expired": False,
+        "expiry": expiry_progress(link),
         "vless_link": vless_link_for_link(link, uid, host),
         "sub_url": f"https://{host}/sub/{uid}",
     }
@@ -853,6 +895,7 @@ async def list_links(request: Request, _=Depends(require_auth)):
             **d,
             "protocol": proto,
             "expired": is_link_expired(d),
+            "expiry": expiry_progress(d),
             "vless_link": vless_link_for_link(d, uid, host),
             "sub_url": f"https://{host}/sub/{uid}",
             "connected_ips": len(unique_ips_for_uuid(uid)),
@@ -887,6 +930,7 @@ async def update_link(uid: str, request: Request, _=Depends(require_auth)):
         if "expires_days" in body:
             ed = int(body["expires_days"] or 0)
             link["expires_at"] = (datetime.now() + timedelta(days=ed)).isoformat() if ed > 0 else None
+            link["expires_days"] = ed if ed > 0 else 0
         if "fingerprint" in body:
             fp = str(body.get("fingerprint") or DEFAULT_FINGERPRINT).strip().lower()
             link["fingerprint"] = fp if fp in FINGERPRINTS else DEFAULT_FINGERPRINT
